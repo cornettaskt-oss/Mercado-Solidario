@@ -1,0 +1,380 @@
+/* Premium CSS Setup */
+:root {
+    --primary: #10b981;
+    --primary-dark: #059669;
+    --primary-light: #d1fae5;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --bg-main: #f3f4f6;
+    --bg-card: #ffffff;
+    --border: #e5e7eb;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    /* ... seus estilos atuais ... */
+    /* Garante que o conteúdo não fique sob o notch do iPhone */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    /* Evita o "zoom" automático em inputs no iOS */
+    touch-action: manipulation;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+.app-container {
+    max-width: 800px;
+    margin: 0 auto;
+    min-height: 100vh;
+    padding-bottom: 40px;
+}
+
+/* Header */
+.app-header {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 30px 20px 40px;
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: var(--shadow-lg);
+}
+
+.logo-container {
+    width: 64px;
+    height: 64px;
+    background: white;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+.logo-placeholder {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+#projectLogo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.header-titles h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.header-titles p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Progress */
+.progress-bar-container {
+    margin: -20px 20px 20px;
+    background: white;
+    padding: 15px 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    position: relative;
+    z-index: 10;
+}
+
+.progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    position: relative;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.progress-bar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 50%; /* JS will update this */
+    background: var(--primary);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.step-label.active {
+    color: var(--primary);
+}
+/* apended */
+/* app css complementary code */
+/* Added additional styles for validity UI and dynamic form behaviors */
+:root {
+    --primary: #10b981;
+    --primary-dark: #059669;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --bg-main: #f3f4f6;
+    --border: #e5e7eb;
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --warning: #f59e0b;
+    --warning-light: #fef3c7;
+    --warning-text: #92400e;
+}
+
+/* Utilities */
+.hidden-field {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.visible-field {
+    display: block;
+    opacity: 1;
+    animation: fadeIn 0.3s forwards;
+}
+.full-width {
+    grid-column: 1 / -1;
+}
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mt-5 { margin-top: 2.5rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 2.5rem; }
+.pl-3 { padding-left: 1rem; }
+.pt-3 { padding-top: 1rem; }
+.pt-4 { padding-top: 1.5rem; }
+.pb-2 { padding-bottom: 0.5rem; }
+.border-t { border-top: 1px solid var(--border); }
+.border-left { border-left: 2px solid var(--border); }
+.font-bold { font-weight: 600; }
+.text-muted { color: var(--text-muted); }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* Base Form Structure */
+.main-content {
+    background: white;
+    margin: 0 20px;
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    z-index: 1;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    color: var(--primary-dark);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-light);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px 20px;
+}
+
+@media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+}
+
+/* Inputs & Labels */
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #4b5563;
+    margin-bottom: 6px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="number"],
+input[type="tel"],
+select {
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    background-color: #f9fafb;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-light);
+    background-color: white;
+}
+
+/* Custom Groups and Box areas */
+.group-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 10px;
+}
+
+.group-title {
+    font-size: 1.05rem;
+    color: #334155;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+/* Radios & Checkboxes */
+.radio-group.row {
+    display: flex;
+    gap: 20px;
+}
+
+.radio-label, .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.toggle-title {
+    font-size: 1.05rem;
+    color: #0f172a;
+}
+
+input[type="checkbox"], input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary); /* Cores nativas modernas */
+    cursor: pointer;
+}
+
+/* Alerts */
+.validity-alert {
+    background-color: var(--warning-light);
+    border-left: 4px solid var(--warning);
+    border-radius: 6px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.validity-alert svg {
+    color: var(--warning-text);
+    flex-shrink: 0;
+}
+
+.validity-content h4 {
+    color: var(--warning-text);
+    margin-bottom: 4px;
+    font-size: 0.95rem;
+}
+
+.validity-content p {
+    color: #78350f;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+/* Buttons */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.btn {
+    
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+.btn-primary:hover { background-color: var(--primary-dark); }
+
+.btn-secondary {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+.btn-secondary:hover { background-color: #d1d5db; }
+
+/* Questions List UI */
+.questions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+.question-item {
+    background: #fafafa;
+    padding: 15px;
+    border-radius: 8px;
+}
+.question-item label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #1f2937;
+}
+.radio-group-sm {
+    display: flex;
+    gap: 15px;
+}
+.column-layout {
+    flex-direction: column;
+    gap: 8px;
+}

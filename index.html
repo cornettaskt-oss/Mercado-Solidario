@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mercado Solidário - FAC</title>
+    <meta name="theme-color" content="#10b981">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- html2pdf for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div class="logo-container" id="logoContainer">
+                        <!-- Imagem será exibida aqui -->
+                        <div class="logo-placeholder">
+                            <span>MQS</span>
+                        </div>
+                    </div>
+                    <div class="header-titles">
+                        <h1>Mercado Solidário</h1>
+                        <p>Mãos que Sustentam - FAC</p>
+                    </div>
+                </div>
+                <button onclick="window.location.href='admin.html'" style="background: #e2e8f0; color: #475569; border: none; padding: 0.5rem; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; width: 36px; height: 36px;" onmouseover="this.style.background='#cbd5e1'" onmouseout="this.style.background='#e2e8f0'" title="Voltar para Admin">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar"></div>
+            <div class="progress-steps">
+                <span class="step-label active" id="label-step1">1. Atendimento</span>
+                <span class="step-label" id="label-step2">2. Familares</span>
+            </div>
+        </div>
+
+        <!-- Main Form Area -->
+        <main class="main-content">
+            <div id="content-container">
+                <!-- Formulário preenchido dinamicamente via JS -->
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Registrando o Service Worker para PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((reg) => console.log('Service Worker Registrado: ', reg.scope))
+                    .catch((err) => console.log('Falha no registro do Service Worker: ', err));
+            });
+        }
+    </script>
+</body>
+</html>
