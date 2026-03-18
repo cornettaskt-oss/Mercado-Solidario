@@ -1,20 +1,43 @@
-// Admin DB Logic
-const STORAGE_KEY = '@MercadoSolidario:Cadastros';
+// Admin DB Logic - Agora usando Firebase Firestore
+const COLLECTION_NAME = 'cadastros';
 
-document.addEventListener('DOMContentLoaded', () => {
-    carregarTabelaAdmin();
+document.addEventListener('DOMContentLoaded', async () => {
+    await carregarTabelaAdmin();
 });
 
-// Retrieves data or create an empty array
-function getCadastros() {
-    const data = localStorage.getItem(STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+// Retrieves data from Firestore
+async function getCadastros() {
+    try {
+        const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
+        const data = [];
+        querySnapshot.forEach((doc) => {
+            data.push({ id: doc.id, ...doc.data() });
+        });
+        return data;
+    } catch (error) {
+        console.error("Erro ao buscar cadastros:", error);
+        return [];
+    }
 }
 
-// Saves data
-function saveCadastros(dataArray) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataArray));
-    carregarTabelaAdmin(); // Reload UI
+// Saves data to Firestore
+async function saveCadastros(dataArray) {
+    try {
+        // Para simplificar, vamos limpar e re-adicionar todos (não ideal para produção, mas ok para demo)
+        const querySnapshot = await getDocs(collection(db, COLLECTION_NAME));
+        querySnapshot.forEach(async (document) => {
+            await deleteDoc(doc(db, COLLECTION_NAME, document.id));
+        });
+
+        for (const item of dataArray) {
+            const { id, ...data } = item; // Remove id local, Firestore gera novo
+            await addDoc(collection(db, COLLECTION_NAME), data);
+        }
+
+        await carregarTabelaAdmin(); // Reload UI
+    } catch (error) {
+        console.error("Erro ao salvar cadastros:", error);
+    }
 }
 
 function formatDateBr(isoString) {
@@ -31,8 +54,8 @@ function isExpired(validadeIso) {
     return now > validDate;
 }
 
-function carregarTabelaAdmin() {
-    let data = getCadastros();
+async function carregarTabelaAdmin() {
+    let data = await getCadastros();
     const tbody = document.getElementById('tableBody');
 
     const searchInput = document.getElementById('searchInput');
@@ -152,8 +175,8 @@ window.toggleParticipants = function () {
     }
 }
 
-window.toggleStatus = function (id) {
-    const data = getCadastros();
+window.toggleStatus = async function (id) {
+    const data = await getCadastros();
     const index = data.findIndex(u => u.id === id);
     if (index !== -1) {
         const isInactive = data[index].status === 'inativo';
@@ -163,16 +186,16 @@ window.toggleStatus = function (id) {
 
         if (confirm(confirmMsg)) {
             data[index].status = isInactive ? 'ativo' : 'inativo';
-            saveCadastros(data);
+            await saveCadastros(data);
         }
     }
 }
 
-window.excluirUser = function (id) {
-    if (confirm("ATENÇÃO: Você está prestes a excluir este cadastro permanentemente da memória do aparelho. Continuar?")) {
-        let data = getCadastros();
+window.excluirUser = async function (id) {
+    if (confirm("ATENÇÃO: Você está prestes a excluir este cadastro permanentemente. Continuar?")) {
+        let data = await getCadastros();
         data = data.filter(u => u.id !== id);
-        saveCadastros(data);
+        await saveCadastros(data);
     }
 }
 
@@ -304,8 +327,8 @@ function buildUserExtractHTML(user, isPdf = false) {
     `;
 }
 
-window.abrirModalUser = function (id) {
-    const data = getCadastros();
+window.abrirModalUser = async function (id) {
+    const data = await getCadastros();
     const user = data.find(u => u.id === id);
     if (!user) return alert("Usuário não encontrado.");
 
@@ -331,8 +354,8 @@ window.fecharModalUser = function () {
     document.getElementById('userModal').style.display = 'none';
 }
 
-window.gerarPdfAdmin = function (id, event) {
-    const data = getCadastros();
+window.gerarPdfAdmin = async function (id, event) {
+    const data = await getCadastros();
     const user = data.find(u => u.id === id);
     if (!user) return alert("Usuário não encontrado.");
 

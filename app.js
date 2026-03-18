@@ -632,8 +632,8 @@ function configurarEventos_Etapa2() {
 
     const btnFinalizar = document.getElementById('btn-finalizar');
     if (btnFinalizar) {
-        btnFinalizar.addEventListener('click', () => {
-            gerarPDFFinal();
+        btnFinalizar.addEventListener('click', async () => {
+            await gerarPDFFinal();
         });
     }
 }
@@ -652,7 +652,7 @@ window.verificarMembrosVazios = function () {
 // PDF GENERATION & LOCALSTORAGE SAVING
 // ============================================
 
-function gerarPDFFinal() {
+async function gerarPDFFinal() {
     const btnFinalizar = document.getElementById('btn-finalizar');
     const originalText = btnFinalizar.innerText;
     btnFinalizar.innerText = "Salvando Cadastro...";
@@ -696,50 +696,50 @@ function gerarPDFFinal() {
     appState.formData.dep_quimico = radioDep ? radioDep.value : '';
     // ------------------------------------
 
-    // --- ADMIN LOCALSTORAGE LOGIC ---
-    let dataList = JSON.parse(localStorage.getItem('@MercadoSolidario:Cadastros') || '[]');
-
-    const editId = localStorage.getItem('@MercadoSolidario:EditTarget');
-    let registro;
-
-    if (editId) {
-        registro = dataList.find(u => u.id === editId);
-        if (registro) {
-            Object.assign(registro, appState.formData); // Overwrite everything mapped
+    // --- FIRESTORE LOGIC ---
+    try {
+        const editId = localStorage.getItem('@MercadoSolidario:EditTarget');
+        if (editId) {
+            // Update existing document
+            await updateDoc(doc(db, 'cadastros', editId), appState.formData);
+            localStorage.removeItem('@MercadoSolidario:EditTarget');
+        } else {
+            // Add new document
+            const docRef = await addDoc(collection(db, 'cadastros'), {
+                ...appState.formData,
+                dataCadastro: new Date().toISOString(),
+                status: 'ativo'
+            });
+            console.log("Documento adicionado com ID: ", docRef.id);
         }
-        localStorage.removeItem('@MercadoSolidario:EditTarget');
-    } else {
-        registro = {
-            id: 'usr_' + Date.now(),
-            ...appState.formData, // Spread all fields into the database
-            dataCadastro: new Date().toISOString(),
-            status: 'ativo'
-        };
-        dataList.push(registro);
-    }
 
-    localStorage.setItem('@MercadoSolidario:Cadastros', JSON.stringify(dataList));
-    // --------------------------------
-
-    // Mudar visual para Sucesso e mostrar opções claras sem recarregar a página
-    const actionsDiv = document.querySelector('.form-actions');
-    if (actionsDiv) {
-        actionsDiv.innerHTML = `
-            <div style="background: #dcfce7; color: #166534; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; font-weight: bold; font-size: 16px;">
-                ✓ Cadastro Finalizado e Salvo com Sucesso!
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 15px;">
-                <button type="button" class="btn btn-secondary" onclick="window.location.reload()" style="background:#2563eb; color:white; width: 100%; padding: 15px; font-size: 16px;">
-                    ✚ Iniciar Novo Cadastro
-                </button>
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='admin.html'" style="background:#475569; color:white; width: 100%; padding: 15px; font-size: 16px;">
-                    Ir para Gestão de Atendimentos
-                </button>
-            </div>
-        `;
-        actionsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    } else if (btnFinalizar) {
-        btnFinalizar.innerText = "Salvo com Sucesso ✓";
-        btnFinalizar.style.backgroundColor = "#059669";
+        // Mudar visual para Sucesso
+        const actionsDiv = document.querySelector('.form-actions');
+        if (actionsDiv) {
+            actionsDiv.innerHTML = `
+                <div style="background: #dcfce7; color: #166534; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; font-weight: bold; font-size: 16px;">
+                    ✓ Cadastro Finalizado e Salvo na Nuvem com Sucesso!
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <button type="button" class="btn btn-secondary" onclick="window.location.reload()" style="background:#2563eb; color:white; width: 100%; padding: 15px; font-size: 16px;">
+                        ✚ Iniciar Novo Cadastro
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='admin.html'" style="background:#475569; color:white; width: 100%; padding: 15px; font-size: 16px;">
+                        Ir para Gestão de Atendimentos
+                    </button>
+                </div>
+            `;
+            actionsDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else if (btnFinalizar) {
+            btnFinalizar.innerText = "Salvo na Nuvem ✓";
+            btnFinalizar.style.backgroundColor = "#059669";
+        }
+    } catch (error) {
+        console.error("Erro ao salvar no Firestore:", error);
+        alert("Erro ao salvar. Verifique sua conexão e tente novamente.");
+        if (btnFinalizar) {
+            btnFinalizar.innerText = originalText;
+            btnFinalizar.disabled = false;
+        }
     }
 }
