@@ -251,6 +251,9 @@ function buildUserExtractHTML(user, isPdf = false) {
                 <td style="padding: 8px; border: 1px solid #cbd5e1;"><strong>RG:</strong> ${user.conjuge_rg || "-"}</td>
                 <td style="padding: 8px; border: 1px solid #cbd5e1;"><strong>Prof / Renda:</strong> ${user.conjuge_profissao || "-"} / R$ ${user.conjuge_renda || "-"}</td>
             </tr>
+            <tr>
+                <td style="padding: 8px; border: 1px solid #cbd5e1;" colspan="3"><strong>Moram juntos?:</strong> ${user.moram_juntos || "-"}</td>
+            </tr>
         </table>` : ''}
 
         <h3 style="color: #1e293b; margin-bottom:15px; font-size: 16px; border-bottom: 2px solid #e2e8f0; padding-bottom:5px;">3. COMPOSIÇÃO FAMILIAR</h3>
@@ -291,6 +294,11 @@ function buildUserExtractHTML(user, isPdf = false) {
             <tr>
                 <td style="padding: 8px; border: 1px solid #cbd5e1;"><strong>Como soube:</strong> ${user.como_soube || "-"}</td>
                 <td style="padding: 8px; border: 1px solid #cbd5e1;"><strong>Problemas Dep/Quim:</strong> ${user.dep_quimico || "-"}</td>
+            </tr>
+            ${user.como_soube === 'Outros' ? `<tr><td colspan="2" style="padding: 8px; border: 1px solid #cbd5e1;"><strong>Observações (Outros):</strong> ${user.obs_outros || "-"}</td></tr>` : ''}
+            <tr>
+                <td style="padding: 8px; border: 1px solid #cbd5e1;"><strong>Meses de Participação no Mercado:</strong> ${user.meses_participacao || "0"}</td>
+                <td style="padding: 8px; border: 1px solid #cbd5e1;"><strong>Observações / Justificativa:</strong> ${user.obs_participacao || "-"}</td>
             </tr>
         </table>
     `;

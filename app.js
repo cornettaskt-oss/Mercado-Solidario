@@ -257,6 +257,17 @@ function gerarHTML_Etapa1() {
                                 <label>Nome do Cônjuge</label>
                                 <input type="text" id="conjuge_nome" placeholder="Nome completo">
                             </div>
+                            <div class="input-group full-width">
+                                <label>Moram juntos?</label>
+                                <div class="radio-group row">
+                                    <label class="radio-label">
+                                        <input type="radio" name="moram_juntos" value="Sim"> Sim
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="moram_juntos" value="Não"> Não
+                                    </label>
+                                </div>
+                            </div>
                             <div class="input-group">
                                 <label>Data de Nascimento</label>
                                 <input type="date" id="conjuge_data_nsc">
@@ -411,6 +422,8 @@ function configurarEventos_Etapa1() {
 
             appState.formData.tem_conjuge = document.getElementById('tem_conjuge')?.checked || false;
             appState.formData.conjuge_nome = document.getElementById('conjuge_nome')?.value || '';
+            const radioMoramJuntos = document.querySelector('input[name="moram_juntos"]:checked');
+            appState.formData.moram_juntos = radioMoramJuntos ? radioMoramJuntos.value : '';
             appState.formData.conjuge_data_nsc = document.getElementById('conjuge_data_nsc')?.value || '';
             appState.formData.conjuge_rg = document.getElementById('conjuge_rg')?.value || '';
             appState.formData.conjuge_cpf = document.getElementById('conjuge_cpf')?.value || '';
@@ -487,9 +500,13 @@ function gerarHTML_Etapa2() {
                 <div class="question-item border-t pt-3 mt-3">
                     <label>Como ficou sabendo do mercado solidário?</label>
                     <div class="radio-group-sm column-layout mt-1">
-                        <label><input type="radio" name="como_soube"> Redes sociais</label>
-                        <label><input type="radio" name="como_soube"> Whatsapp</label>
-                        <label><input type="radio" name="como_soube"> Outros participantes do mercado</label>
+                        <label><input type="radio" name="como_soube" value="Redes sociais"> Redes sociais</label>
+                        <label><input type="radio" name="como_soube" value="Whatsapp"> Whatsapp</label>
+                        <label><input type="radio" name="como_soube" value="Por participantes do mercado"> Por participantes do mercado</label>
+                        <label><input type="radio" name="como_soube" value="Outros"> Outros</label>
+                    </div>
+                    <div id="campo_outros" class="hidden-field mt-2">
+                        <input type="text" id="obs_outros" placeholder="Observações" class="full-width">
                     </div>
                 </div>
 
@@ -498,6 +515,15 @@ function gerarHTML_Etapa2() {
                     <div class="radio-group-sm">
                         <label><input type="radio" name="dep_quimico" value="SIM"> SIM</label>
                         <label><input type="radio" name="dep_quimico" value="NÃO"> NÃO</label>
+                    </div>
+                </div>
+
+                <div class="question-item border-t pt-3 mt-3">
+                    <label>Esse usuário já participou quantos meses do Mercado Solidário?</label>
+                    <input type="number" id="meses_participacao" placeholder="Número de meses" min="0" class="full-width">
+                    <div class="mt-2">
+                        <label>Observações / Justificativa:</label>
+                        <textarea id="obs_participacao" placeholder="Explique o motivo ou detalhes da participação..." rows="3" class="full-width"></textarea>
                     </div>
                 </div>
             </div>
@@ -539,6 +565,22 @@ function configurarEventos_Etapa2() {
             campoCras.classList.remove('visible-field');
         });
     }
+
+    // Outros field
+    const radiosComoSoube = document.querySelectorAll('input[name="como_soube"]');
+    const campoOutros = document.getElementById('campo_outros');
+
+    radiosComoSoube.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            if (e.target.value === 'Outros') {
+                campoOutros.classList.remove('hidden-field');
+                campoOutros.classList.add('visible-field');
+            } else {
+                campoOutros.classList.add('hidden-field');
+                campoOutros.classList.remove('visible-field');
+            }
+        });
+    });
 
     if (btnAddMember) {
         btnAddMember.addEventListener('click', () => {
@@ -644,7 +686,11 @@ function gerarPDFFinal() {
     appState.formData.campo_cras = document.querySelector('#campo_cras input')?.value || '';
 
     const radioSoube = document.querySelector('input[name="como_soube"]:checked');
-    appState.formData.como_soube = radioSoube ? radioSoube.parentElement.innerText.trim() : '';
+    appState.formData.como_soube = radioSoube ? radioSoube.value : '';
+    appState.formData.obs_outros = document.getElementById('obs_outros')?.value || '';
+
+    appState.formData.meses_participacao = document.getElementById('meses_participacao')?.value || '';
+    appState.formData.obs_participacao = document.getElementById('obs_participacao')?.value || '';
 
     const radioDep = document.querySelector('input[name="dep_quimico"]:checked');
     appState.formData.dep_quimico = radioDep ? radioDep.value : '';
